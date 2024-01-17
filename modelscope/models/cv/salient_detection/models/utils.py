@@ -4,7 +4,7 @@
 # Originally MIT license,publicly available at https://github.com/Jongchan/attention-module/blob/master/MODELS/cbam.py
 import torch
 import torch.nn as nn
-
+import torch.nn.functional as F
 
 class ConvBNReLU(nn.Module):
 
@@ -53,7 +53,8 @@ class ASPP(nn.Module):
         conv3 = self.conv3(x)
         conv4 = self.conv4(x)
         xg = self.conv5(self.global_pooling(x))
-        conv5 = nn.Upsample((x.shape[2], x.shape[3]), mode='nearest')(xg)
+        #conv5 = nn.Upsample((x.shape[2], x.shape[3]), mode='nearest')(xg)
+        conv5 = F.interpolate(xg, size=(x.shape[2], x.shape[3]), mode='nearest')
         return self.fuse(torch.cat((conv1, conv2, conv3, conv4, conv5), 1))
 
 

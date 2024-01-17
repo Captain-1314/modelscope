@@ -103,8 +103,11 @@ class StructureE(nn.Module):
                 edgeAtten, x.size()[2:], mode='bilinear', align_corners=False)
         xx = torch.chunk(x, self.ne_modules, dim=1)
         efeas = []
-        for i in range(self.ne_modules):
-            xei = self.emlayes[i](xx[i], edgeAtten)
+        #for i in range(self.ne_modules):
+        #    xei = self.emlayes[i](xx[i], edgeAtten)
+        #    efeas.append(xei)
+        for index, emlayer in enumerate(self.emlayes):
+            xei = emlayer(xx[index], edgeAtten)
             efeas.append(xei)
         efeas = torch.cat(efeas, dim=1)
         x_out = self.body(efeas)
@@ -167,8 +170,11 @@ class AMFusion(nn.Module):
         xm = self.up(torch.sigmoid(xhm))
         xx = torch.chunk(x, self.na_modules, dim=1)
         xxmids = []
-        for i in range(self.na_modules):
-            xi = self.alayers[i](xx[i], xm)
+        #for i in range(self.na_modules):
+        #    xi = self.alayers[i](xx[i], xm)
+        #    xxmids.append(xi)
+        for index, alayer in enumerate(self.alayers):
+            xi = alayer(xx[index], xm)
             xxmids.append(xi)
         xfea = torch.cat(xxmids, dim=1)
         x0 = self.fusion_0(xfea)
